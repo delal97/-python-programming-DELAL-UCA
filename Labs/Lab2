@@ -1,0 +1,128 @@
+import matplotlib.pyplot as plt
+import math
+
+widths = []
+heights = []
+labels = []
+
+with open("datapoints.txt") as file:
+    for line in file:
+        line = line.strip()
+        if not line:
+            continue 
+        parts = line.split(",")
+        if len(parts) != 3:
+            continue 
+        try:
+            width = float(parts[0])
+            height = float(parts[1])
+            label = int(parts[2])
+        except ValueError:
+            continue
+        widths.append(width)
+        heights.append(height)
+        labels.append(label)
+
+data = list(zip(widths, heights, labels))
+
+pichu_bred = []
+for point in data:
+    widths, heights, labels = point
+    if labels == 0:
+        pichu_bred.append(widths)
+pichu_höjd = []
+for point in data:
+    widths, heights, labels = point
+    if labels == 0:
+        pichu_höjd.append(heights)
+
+pikachu_bred = []
+for point in data:
+    widths, heights, labels = point
+    if labels == 1:
+        pikachu_bred.append(widths)
+pikachu_höjd =[]
+for point in data:
+    widths, heights, labels = point
+    if labels == 1:
+        pikachu_höjd.append(heights)
+
+plt.figure(figsize=(8, 6))
+plt.scatter(pichu_bred, pichu_höjd, color='blue', label='Pichu')
+plt.scatter(pikachu_bred, pikachu_höjd, color='yellow', label='Pikachu')
+plt.xlabel("Width")
+plt.ylabel("Height")
+plt.title("Training data for Pichu and Pikachu")
+plt.legend()
+plt.grid(True)
+plt.show()
+
+test_points = [
+    (25, 32),
+    (24.2, 31.5),
+    (22, 34),
+    (20.5, 34)
+]
+
+def euclidean_distance(point1, point2):
+    return math.sqrt((point1[0] - point2[0])**2 + (point1[1] - point2[1])**2)
+
+def classify_point(test_point, k=10):
+    distances = []
+    for width, height, label in data:
+        dist = euclidean_distance(test_point, (width, height))
+        distances.append((dist, label))
+    distances.sort(key=lambda x: x[0])
+    nearest_k = distances[:k]
+
+    count_pichu = sum(1 for d in nearest_k if d[1] == 0)
+    count_pikachu = sum(1 for d in nearest_k if d[1] == 1)
+
+    if count_pikachu > count_pichu:
+        return "Pikachu"
+    else:
+        return "Pichu"
+
+
+for test_point in test_points:
+    distances = []
+    for width, height, label in data:
+        dist = euclidean_distance(test_point, (width, height))
+        distances.append((dist, label))
+
+    distances.sort(key=lambda x: x[0])
+    nearest_k = distances[:10]
+
+    print(f"Testpoint {test_point}:")
+    for i, (dis, label) in enumerate(nearest_k):
+        clas = "Pichu" if label == 0 else "Pikachu"
+        print(f"{i+1}. distance: {dis:.2f}, class: {clas}")
+
+    classification = classify_point(test_point, k=10)
+    print(f"classified as: {classification}")
+
+print("you can classify point using 10 nearest neighbors")
+
+while True:
+    try:
+        w_input = input("give withd: ").strip()
+        h_input = input("give height: ").strip()
+
+        width = float(w_input)
+        height = float(h_input)
+
+        if width <= 0 or height <= 0:
+            print("width and height must be positive numbers.")
+            continue
+
+        klass = classify_point((width, height), k=10)
+        print(f"Punkt ({width}, {height}) clasifies as:  {klass}")
+
+    except ValueError:
+        print("You have type in numbers only.")
+        continue
+
+    answer = input("Doyou want to clasify a new point write 'yes' : ").strip().lower()
+    if answer != "yes":
+        print("ending program")
+        break
