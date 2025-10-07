@@ -1,1 +1,38 @@
+print("Input three angles")
+a, b, c = float(input()), float(input()), float(input())
 
+if a + b + c != 180:
+    print("Angles don't form a triangle!")
+elif a == 90 or b == 90 or c == 90:
+    print("Triangle has a right angle")
+
+
+
+print("Enter the paitiens's age and weight")
+age = int(input("Age: "))
+weight = float(input("Weight: "))
+
+if age < 3 and weight < 14:
+    print("not allowed")
+elif age <= 7 and weight <= 25:
+    print("1/2 pill")
+elif  age <= 12 and weight < 40:
+    print("1/2-1 pill")
+elif age >= 12 and weight >= 40:
+    print(" 1-2 pills")
+else:
+    print("invalid number")
+
+
+
+print("Input a number:")
+num = int(input())
+
+if num % 2 == 0:
+    print("The number is even")
+    if num % 5 == 0:
+        print("The number is divisible of 5")
+elif num % 5 == 0:
+    print("The number is divisible of 5 and is odd")
+else:
+    print("the number is not divisible of 5 or is even")
